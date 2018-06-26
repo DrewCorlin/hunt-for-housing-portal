@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "grunt start",
-    "build": "eslint app && grunt build",
+    "build": "eslint app && grunt build && uglifyjs public/app.js --compress --mangle -o public/app.js",
+    "lint": "eslint app",
+    "lint-fix": "eslint app --fix",
     "test": "echo test"
   },
   "dependencies": {
