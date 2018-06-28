@@ -1,13 +1,23 @@
-import {Marionette} from '../../vendor/vendor';
+// import {Marionette} from '../../vendor/vendor';
 
-export default Marionette.View.extend({
-    className: "modal-view",
+// // Takes a view object and displays it over the whole screen
 
-    show: function() {
-        // this.$el.show();
-    },
+// export default Marionette.View.extend({
+//     className: "modal-view",
 
-    hide: function() {
-        // this.$el.hide();
-    }
-});
+//     region: {
+//         modalRegion: ".js-modal-region"
+//     },
+
+//     // View to be displayed must override this
+//     ModalView: null,
+
+//     show: function() {
+//         this.modalRegion.showView(ModalView);
+//     },
+
+//     destroy: function() {
+//         this.ModalView.destroy();
+//         this.destroy();
+//     }
+// });

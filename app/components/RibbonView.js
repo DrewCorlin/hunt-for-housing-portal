@@ -1,23 +1,26 @@
 import {Marionette, App} from '../../vendor/vendor';
-// import ModalView from './ModalView';
 import tpl from '../templates/ribbon.tpl';
-// import loginModalTpl from '../templates/modals/loginModal.tpl';
+import loginModalTpl from '../templates/modals/loginModal.tpl';
 
-// var LoginModalView = Marionette.View.extend({
-//     template: loginModalTpl,
+var LoginModalView = Marionette.View.extend({
+    template: loginModalTpl,
 
-//     events: {
-//         "click .js-cancel": "onCancel"
-//     },
+    events: {
+        "click .js-cancel": "onCancel"
+    },
 
-//     onCancel: function() {
-//         console.log('cancel');
-//         // Create modal region that takes a view and displays it
-//         // Conventions:
-//         //  Must have a cancel button that destroys the view (and hides the region?)
-//         //  Confirmation button will destroy the view (and hide region?) when it is done
-//     }
-// });
+    onCancel: function() {
+        console.log('cancel');
+        App.request('close:modal');
+    },
+
+    onSubmitLogin: function() {
+        console.log("submit login");
+        var username = this.$(".js-username-input").val();
+        var password = this.$(".js-password-input").val();
+        App.request('user:login', username, password);
+    }
+});
 
 export default Marionette.View.extend({
     template: tpl,
@@ -34,6 +37,6 @@ export default Marionette.View.extend({
 
     onClickLogin: function() {
         this.model.set("loggedIn", true);
-        App.request('user:login', "hi there", "hi again");
+        App.request('show:modal', new LoginModalView());
     }
 });

@@ -7,9 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _vendor = require('../../vendor/vendor');
 
-var _MainView = require('./MainView');
+var _BaseView = require('./BaseView');
 
-var _MainView2 = _interopRequireDefault(_MainView);
+var _BaseView2 = _interopRequireDefault(_BaseView);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17,11 +17,11 @@ exports.default = _vendor.Marionette.Application.extend({
     region: '#app',
 
     onStart: function onStart() {
-        this.showView(new _MainView2.default());
+        this.showView(new _BaseView2.default());
     }
 });
 
-},{"../../vendor/vendor":12,"./MainView":2}],2:[function(require,module,exports){
+},{"../../vendor/vendor":13,"./BaseView":2}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30,9 +30,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _vendor = require('../../vendor/vendor');
 
-var _main = require('../templates/main.tpl');
+var _base = require('../templates/base.tpl');
 
-var _main2 = _interopRequireDefault(_main);
+var _base2 = _interopRequireDefault(_base);
 
 var _RibbonView = require('./RibbonView');
 
@@ -65,7 +65,7 @@ var Entities = {
 };
 
 exports.default = _vendor.Marionette.View.extend({
-    template: _main2.default,
+    template: _base2.default,
     className: "main-view",
 
     regions: {
@@ -80,13 +80,19 @@ exports.default = _vendor.Marionette.View.extend({
 
     initialize: function initialize() {
         // Global events
-        _vendor.App.reply('modal:view', this.showModal);
+        _vendor.App.reply('show:modal', this.showModal);
+        _vendor.App.reply('hide:modal', this.hideModal);
         _vendor.App.reply('user:login', this.login);
         _vendor.App.reply('user:logout', this.logout);
     },
 
     showModal: function showModal(view) {
-        this.modalRegion.showView(view);
+        console.log(this);
+        this.modalRegion.showChildView(view);
+    },
+
+    hideModal: function hideModal(view) {
+        this.modalRegion.destroyChildView(view);
     },
 
     login: function login(username, password) {
@@ -98,7 +104,7 @@ exports.default = _vendor.Marionette.View.extend({
     }
 });
 
-},{"../../vendor/vendor":12,"../templates/main.tpl":5,"./RibbonView":3}],3:[function(require,module,exports){
+},{"../../vendor/vendor":13,"../templates/base.tpl":5,"./RibbonView":3}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -111,25 +117,31 @@ var _ribbon = require('../templates/ribbon.tpl');
 
 var _ribbon2 = _interopRequireDefault(_ribbon);
 
+var _loginModal = require('../templates/modals/loginModal.tpl');
+
+var _loginModal2 = _interopRequireDefault(_loginModal);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import loginModalTpl from '../templates/modals/loginModal.tpl';
+var LoginModalView = _vendor.Marionette.View.extend({
+    template: _loginModal2.default,
 
-// var LoginModalView = Marionette.View.extend({
-//     template: loginModalTpl,
+    events: {
+        "click .js-cancel": "onCancel"
+    },
 
-//     events: {
-//         "click .js-cancel": "onCancel"
-//     },
+    onCancel: function onCancel() {
+        console.log('cancel');
+        _vendor.App.request('close:modal');
+    },
 
-//     onCancel: function() {
-//         console.log('cancel');
-//         // Create modal region that takes a view and displays it
-//         // Conventions:
-//         //  Must have a cancel button that destroys the view (and hides the region?)
-//         //  Confirmation button will destroy the view (and hide region?) when it is done
-//     }
-// });
+    onSubmitLogin: function onSubmitLogin() {
+        console.log("submit login");
+        var username = this.$(".js-username-input").val();
+        var password = this.$(".js-password-input").val();
+        _vendor.App.request('user:login', username, password);
+    }
+});
 
 exports.default = _vendor.Marionette.View.extend({
     template: _ribbon2.default,
@@ -146,12 +158,11 @@ exports.default = _vendor.Marionette.View.extend({
 
     onClickLogin: function onClickLogin() {
         this.model.set("loggedIn", true);
-        _vendor.App.request('user:login', "hi there", "hi again");
+        _vendor.App.request('show:modal', new LoginModalView());
     }
 });
-// import ModalView from './ModalView';
 
-},{"../../vendor/vendor":12,"../templates/ribbon.tpl":6}],4:[function(require,module,exports){
+},{"../../vendor/vendor":13,"../templates/modals/loginModal.tpl":6,"../templates/ribbon.tpl":7}],4:[function(require,module,exports){
 'use strict';
 
 var _App = require('./components/App');
@@ -175,7 +186,17 @@ __p+='<div class="js-ribbon-region"></div> <div class="js-content-region"></div>
 return __p;
 };
 
-},{"underscore":11}],6:[function(require,module,exports){
+},{"underscore":12}],6:[function(require,module,exports){
+var _ = require('underscore');
+module.exports = function(obj){
+var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+with(obj||{}){
+__p+='<input type="text" name="username" class="js-username-input username-input"> <input type="text" name="password" class="js-password-input password-input"> <button class="js-cancel cancel">Cancel</button> <button class="js-request-login-button request-login-button btn"></button>';
+}
+return __p;
+};
+
+},{"underscore":12}],7:[function(require,module,exports){
 var _ = require('underscore');
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
@@ -191,7 +212,7 @@ __p+=' </button> </div>';
 return __p;
 };
 
-},{"underscore":11}],7:[function(require,module,exports){
+},{"underscore":12}],8:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v3.0.0
@@ -3433,7 +3454,7 @@ return __p;
 
 
 
-},{"backbone":9,"backbone.radio":8,"underscore":11}],8:[function(require,module,exports){
+},{"backbone":10,"backbone.radio":9,"underscore":12}],9:[function(require,module,exports){
 // Backbone.Radio v2.0.0
 
 (function (global, factory) {
@@ -3784,7 +3805,7 @@ return __p;
 
 }));
 
-},{"backbone":9,"underscore":11}],9:[function(require,module,exports){
+},{"backbone":10,"underscore":12}],10:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.3.3
 
@@ -5708,7 +5729,7 @@ return __p;
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":10,"underscore":11}],10:[function(require,module,exports){
+},{"jquery":11,"underscore":12}],11:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v1.12.4
  * http://jquery.com/
@@ -16718,7 +16739,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -18268,7 +18289,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18308,4 +18329,4 @@ exports.Backbone = _backbone2.default;
 exports.Marionette = _backbone4.default;
 exports.App = App;
 
-},{"backbone":9,"backbone.marionette":7,"backbone.radio":8,"jquery":10,"underscore":11}]},{},[4]);
+},{"backbone":10,"backbone.marionette":8,"backbone.radio":9,"jquery":11,"underscore":12}]},{},[4]);

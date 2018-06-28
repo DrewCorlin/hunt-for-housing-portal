@@ -1,5 +1,5 @@
 import {Backbone, Marionette, App} from '../../vendor/vendor';
-import tpl from '../templates/main.tpl';
+import tpl from '../templates/base.tpl';
 import RibbonView from './RibbonView';
 
 var root =  "localhost:8000/";
@@ -42,13 +42,19 @@ export default Marionette.View.extend({
 
     initialize: function() {
         // Global events
-        App.reply('modal:view', this.showModal);
+        App.reply('show:modal', this.showModal);
+        App.reply('hide:modal', this.hideModal);
         App.reply('user:login', this.login);
         App.reply('user:logout', this.logout);
     },
 
     showModal: function(view) {
-        this.modalRegion.showView(view);
+        console.log(this);
+        this.modalRegion.showChildView(view);
+    },
+
+    hideModal: function(view) {
+        this.modalRegion.destroyChildView(view);
     },
 
     login: function(username, password) {
