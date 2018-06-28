@@ -1,26 +1,42 @@
-:root{
-    --main-color: #aed8e5;    
-}
-
 * {
   box-sizing: border-box;
   font-family: -apple-system, system, sans-serif;
   /*color: #505050;*/
 }
-
 .title {
-    text-align: center;
-    font-size: 30px;
+  text-align: center;
+  font-size: 30px;
 }
-
-html, body, #app {
-    height: 95%;
+html,
+body,
+#app {
+  height: 95%;
 }
-
 .main-view {
-    border: 1px solid var(--main-color);
-    padding: 20px 30px 10px 30px;
-    margin: 50px 30px 20px 30px;
-    height: 95%;
-    position: relative;
+  border: 1px solid #aed8e5;
+  padding: 20px 30px 10px 30px;
+  margin: 50px 30px 20px 30px;
+  height: 95%;
+  position: relative;
+}
+.btn {
+  background-color: #aed8e5;
+  height: 25px;
+  width: 120px;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  border: 0;
+  margin: 0px 5px 0px 5px;
+}
+.btn:hover {
+  cursor: pointer;
+  box-shadow: ;
+}
+.btn:active {
+  background-color: #c4e7f2;
+}
+.ribbon-view {
+  display: flex;
+  justify-content: space-between;
 }

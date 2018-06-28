@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "grunt start",
-    "build": "eslint app && grunt build && uglifyjs public/app.js --compress --mangle -o public/app.js",
+    "build": "eslint app && grunt build && uglifyjs public/app.js --compress --mangle -o public/app.js && lessc app/styles/master.less public/main.css",
     "lint": "eslint app",
     "lint-fix": "eslint app --fix",
     "test": "echo test"
@@ -17,9 +17,7 @@
   "dependencies": {
     "backbone": "~1.3.3",
     "backbone.marionette": "~3.0.0",
-    "jquery": "~1.12.2",
-    "uglify-js": "^3.4.2",
-    "underscore": "^1.7.0"
+    "jquery": "~1.12.2"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.6.0",
@@ -31,6 +29,9 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-http": "^2.3.1",
-    "jstify": "^0.14.0"
+    "jstify": "^0.14.0",
+    "less": "^3.0.4",
+    "uglify-js": "^3.4.2",
+    "underscore": "^1.8.3"
   }
 }
