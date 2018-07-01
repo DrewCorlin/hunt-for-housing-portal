@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "grunt start",
-    "build": "eslint app && grunt build && uglifyjs public/app.js --compress --mangle -o public/app.js && lessc app/styles/main.less public/main.css",
+    "build": "eslint app && grunt build",
+    "server": "open 'http://localhost:8080' && http-server --cors",
     "lint": "eslint app",
     "lint-fix": "eslint app --fix",
     "test": "echo test"
@@ -27,11 +28,13 @@
     "grunt-browser-sync": "^2.2.0",
     "grunt-browserify": "^4.0.1",
     "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-less": "^2.0.0",
+    "grunt-contrib-uglify": "^3.3.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-http": "^2.3.1",
+    "http-server": "^0.11.1",
     "jstify": "^0.14.0",
-    "less": "^3.0.4",
-    "uglify-js": "^3.4.2",
-    "underscore": "^1.8.3"
+    "toastr": "^2.1.4",
+    "underscore": "~1.8.3"
   }
 }

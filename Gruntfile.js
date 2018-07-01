@@ -47,6 +47,31 @@ module.exports = function (grunt) {
         files: ["./app/**"],
         tasks: ["build"]
       }
+    },
+    less: {
+      development: {
+        options: {
+          paths: ["/app/styles"],
+          compress: true
+        },
+        files: {
+          './public/main.css': ['./app/styles/base.less', './app/styles/ribbon.less', './app/styles/common.less']
+        }
+      }
+    },
+    uglify: {
+      options: {
+        mangle: true,
+        compress: true,
+        output: {
+          comments: false
+        }
+      },
+      development: {
+        files: {
+          './public/app.js': ['./public/app.js']
+        }
+      }
     }
   });
 
@@ -54,7 +79,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-browser-sync');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('start', ['build', 'browserSync', 'watch']);
-  grunt.registerTask("build", ["browserify", "copy:main"]);
+  grunt.registerTask("build", ["browserify", "copy:main", "less", "uglify"]);
 };

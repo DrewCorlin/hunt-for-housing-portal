@@ -28,7 +28,7 @@
       }
     ],
     "keyword-spacing": [ 2 ],
-    "new-cap": 2,
+    "new-cap": 0,
     "no-bitwise": 2,
     "no-caller": 2,
     "no-cond-assign": [ 2, "except-parens" ],
@@ -54,7 +54,7 @@
     "no-with": 2,
     "one-var": [ 2, "never" ],
     "operator-linebreak": [ 2, "after" ],
-    "semi": [ 1, "always" ],
+    "semi": [ 2, "always" ],
     "space-before-blocks": [ 2, "always" ],
     "space-before-function-paren": [ 2, "never" ],
     "space-in-parens": [ 2, "never" ],

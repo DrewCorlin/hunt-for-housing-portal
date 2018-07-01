@@ -1,13 +1,11 @@
 <div class="house-interaction-container">
-    <button class='js-find-house-button btn'>Find</button>
-    <button class='js-register-house-button btn'>Register</button>
+    <button class='js-find-house-button med-btn'>Find</button>
+    <button class='js-register-house-button med-btn'>Register</button>
 </div>
 <div class="account-interaction-container">
-    <button class='js-login-button btn'>
-        <% if (loggedIn) { %> 
-        Logout
+        <% if (window.serverSession.authToken) { %> 
+            <button class='js-logout-button med-btn'>Logout</button>
         <% } else { %>
-        Login
+            <button class='js-login-button med-btn'>Login</button>
         <% } %>
-    </button>
 </div>

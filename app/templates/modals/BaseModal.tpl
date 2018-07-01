@@ -1,1 +1,0 @@
-<div class="js-modal-region modal-region"></div>

@@ -1,34 +1,14 @@
-import {Backbone, Marionette, App} from '../../vendor/vendor';
-import tpl from '../templates/base.tpl';
+import { Marionette, App, toast } from '../../vendor/vendor';
+import Entities from '../Entities';
 import RibbonView from './RibbonView';
+import RegisterHouseView from './RegisterHouseView';
+import tpl from '../templates/base.tpl';
 
-var root =  "localhost:8000/";
-
-var Urls = {
-    login: root + "login",
-    logout: root + "logout"
-};
-
-var Entities = {
-    User: Backbone.Model.extend({
-        defaults: {
-            loggedIn: false
-        }
-    }),
-    UserLogin: Backbone.Model.extend({
-        defaults: {
-            username: null,
-            password: null,
-            loggedIn: false,
-            displayCredentialsInput: false
-        },
-        url: Urls.login
-    })
-};
+var DEV_HEADERS = {headers: {'X-House-Finder-User': 'Drew'}};
 
 export default Marionette.View.extend({
     template: tpl,
-    className: "main-view",
+    className: "base-view",
 
     regions: {
         ribbonRegion: ".js-ribbon-region",
@@ -37,31 +17,63 @@ export default Marionette.View.extend({
     },
 
     onRender: function() {
-        this.showChildView("ribbonRegion", new RibbonView({model: new Entities.UserLogin()}));
+        this.showChildView("ribbonRegion", new RibbonView({model: new Entities.User()}));
     },
 
     initialize: function() {
         // Global events
-        App.reply('show:modal', this.showModal);
-        App.reply('hide:modal', this.hideModal);
-        App.reply('user:login', this.login);
-        App.reply('user:logout', this.logout);
+        App.on('modal:open', this.openModal, this);
+        App.on('modal:close', this.closeModal, this);
+        App.on('toast:show', this.showToast, this);
+        App.on('error:toast:show', this.showErrorToast, this);
+        App.reply('user:login', this.login, this);
+        App.reply('user:logout', this.logout, this);
     },
 
-    showModal: function(view) {
-        console.log(this);
-        this.modalRegion.showChildView(view);
+    openModal: function(view) {
+        this.showChildView('modalRegion', view);
     },
 
-    hideModal: function(view) {
-        this.modalRegion.destroyChildView(view);
+    closeModal: function(view) {
+        this.getRegion('modalRegion').empty();
+    },
+
+    showToast: function(text) {
+        $('.js-toast').removeClass('error-toast').addClass('toast');
+        $('.js-toast').text(text);
+        $('.js-toast').show(5000, function() {
+            $(this).delay(5000).hide();
+        });
+    },
+
+    showErrorToast: function(text) {
+        $('.js-toast').removeClass('toast').addClass('error-toast');
+        $('.js-toast').text(text);
+        $('.js-toast').show(5000, function() {
+            $(this).delay(5000).hide();
+        });
     },
 
     login: function(username, password) {
-        console.log('login', username, password);
+        var userLogin = new Entities.UserLogin();
+        var defer = $.Deferred();
+        userLogin.save({username: username, password: password}, DEV_HEADERS).done(function(response) {
+            defer.resolve();
+            window.serverSession.authToken = response.authToken;
+            App.trigger('toast:show', "Successfully logged in");
+        }).fail(function(response) {
+            defer.reject();
+            // App.trigger('error:toast:show', response.responseText);
+            toast.error("No dice");
+        });
+        return defer.promise();
     },
 
     logout: function(username) {
         console.log('logout', username);
     },
+
+    onChildviewRegisterHouse: function() {
+        this.showChildView('contentRegion', new RegisterHouseView());
+    }
 });
