@@ -19,5 +19,11 @@ export default {
             password: null
         },
         url: Urls.login
+    }),
+    UserLogout: Backbone.Model.extend({
+        defaults: {
+            username: null
+        },
+        url: Urls.logout
     })
 };

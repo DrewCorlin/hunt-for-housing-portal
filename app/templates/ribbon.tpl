@@ -3,9 +3,6 @@
     <button class='js-register-house-button med-btn'>Register</button>
 </div>
 <div class="account-interaction-container">
-        <% if (window.serverSession.authToken) { %> 
-            <button class='js-logout-button med-btn'>Logout</button>
-        <% } else { %>
-            <button class='js-login-button med-btn'>Login</button>
-        <% } %>
+    <button class='js-login-button med-btn'>Login</button>
+    <button class='js-logout-button med-btn hidden'>Logout</button>
 </div>

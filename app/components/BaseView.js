@@ -4,8 +4,6 @@ import RibbonView from './RibbonView';
 import RegisterHouseView from './RegisterHouseView';
 import tpl from '../templates/base.tpl';
 
-var DEV_HEADERS = {headers: {'X-House-Finder-User': 'Drew'}};
-
 export default Marionette.View.extend({
     template: tpl,
     className: "base-view",
@@ -26,7 +24,6 @@ export default Marionette.View.extend({
         App.on('modal:close', this.closeModal, this);
         App.on('toast:show', this.showToast, this);
         App.on('error:toast:show', this.showErrorToast, this);
-        App.reply('user:login', this.login, this);
         App.reply('user:logout', this.logout, this);
     },
 
@@ -39,34 +36,11 @@ export default Marionette.View.extend({
     },
 
     showToast: function(text) {
-        $('.js-toast').removeClass('error-toast').addClass('toast');
-        $('.js-toast').text(text);
-        $('.js-toast').show(5000, function() {
-            $(this).delay(5000).hide();
-        });
+        toast.success(text);
     },
 
     showErrorToast: function(text) {
-        $('.js-toast').removeClass('toast').addClass('error-toast');
-        $('.js-toast').text(text);
-        $('.js-toast').show(5000, function() {
-            $(this).delay(5000).hide();
-        });
-    },
-
-    login: function(username, password) {
-        var userLogin = new Entities.UserLogin();
-        var defer = $.Deferred();
-        userLogin.save({username: username, password: password}, DEV_HEADERS).done(function(response) {
-            defer.resolve();
-            window.serverSession.authToken = response.authToken;
-            App.trigger('toast:show', "Successfully logged in");
-        }).fail(function(response) {
-            defer.reject();
-            // App.trigger('error:toast:show', response.responseText);
-            toast.error("No dice");
-        });
-        return defer.promise();
+        toast.error(text, "Error");
     },
 
     logout: function(username) {
