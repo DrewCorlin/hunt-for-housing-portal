@@ -55,8 +55,8 @@ export default Marionette.View.extend({
         var defer = $.Deferred();
         userLogin.save({username: username, password: password}, DEV_HEADERS).done(function(response) {
             defer.resolve();
-            window.serverSession.authToken = response.authToken;
-            window.serverSession.username = username;
+            App.trigger('set:user:authToken', response.authToken);
+            App.trigger('set:user:username', username);
             App.trigger('toast:show', "Successfully logged in");
             App.trigger('user:loggedIn');
         }).fail(function(response) {

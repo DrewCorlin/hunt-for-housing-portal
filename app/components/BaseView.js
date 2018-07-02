@@ -19,12 +19,11 @@ export default Marionette.View.extend({
     },
 
     initialize: function() {
-        // Global events
+        // Global view-specific events
         App.on('modal:open', this.openModal, this);
         App.on('modal:close', this.closeModal, this);
         App.on('toast:show', this.showToast, this);
         App.on('error:toast:show', this.showErrorToast, this);
-        App.reply('user:logout', this.logout, this);
     },
 
     openModal: function(view) {
@@ -41,10 +40,6 @@ export default Marionette.View.extend({
 
     showErrorToast: function(text) {
         toast.error(text, "Error");
-    },
-
-    logout: function(username) {
-        console.log('logout', username);
     },
 
     onChildviewRegisterHouse: function() {

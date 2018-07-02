@@ -32,7 +32,7 @@ export default Marionette.View.extend({
 
     onClickLogout: function() {
         var username = window.serverSession.username;
-        var authToken = window.serverSession.authToken;
+        var authToken = App.request('user:authToken');
         DEV_HEADERS.headers['X-User-Auth-Token'] = authToken;
         var userLogout = new Entities.UserLogout();
         var defer = $.Deferred();
