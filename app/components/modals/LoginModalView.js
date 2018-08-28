@@ -1,8 +1,5 @@
 import { Marionette, App } from '../../../vendor/vendor';
-import Entities from '../../Entities';
 import tpl from '../../templates/modals/loginModal.tpl';
-
-var DEV_HEADERS = {headers: {'X-House-Finder-User': 'Drew'}};
 
 export default Marionette.View.extend({
     template: tpl,
@@ -46,23 +43,17 @@ export default Marionette.View.extend({
             requiredFieldsFilled = false;
         }
         if (!requiredFieldsFilled) { return; }
-        this._login(username, password);
-        App.trigger('modal:close');
-    },
 
-    _login: function(username, password) {
-        var userLogin = new Entities.UserLogin();
-        var defer = $.Deferred();
-        userLogin.save({username: username, password: password}, DEV_HEADERS).done(function(response) {
-            defer.resolve();
-            App.trigger('set:user:authToken', response.authToken);
-            App.trigger('set:user:username', username);
+        var userLogin = App.request("user:login", username, password);
+        userLogin.done(function(response) {
             App.trigger('toast:show', "Successfully logged in");
             App.trigger('user:loggedIn');
+            document.cookie = App.request('cookie:string', 'authToken=' + response.authToken + ';');
+            document.cookie = App.request('cookie:string', 'loggedIn=true;');
+            document.cookie = App.request('cookie:string', 'username=' + username + ';');
         }).fail(function(response) {
-            defer.reject();
             App.trigger('error:toast:show', response.responseText);
         });
-        return defer.promise();
+        App.trigger('modal:close');
     }
 });

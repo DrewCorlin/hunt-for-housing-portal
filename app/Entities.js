@@ -1,11 +1,5 @@
 import { Backbone } from '../vendor/vendor';
-
-var root = 'http://127.0.0.1:8000/';
-
-var Urls = {
-    login: root + 'login',
-    logout: root + 'logout'
-};
+import Urls from "./urls";
 
 export default {
     User: Backbone.Model.extend({
@@ -25,5 +19,16 @@ export default {
             username: null
         },
         url: Urls.logout
+    }),
+    HouseRegister: Backbone.Model.extend({
+        defaults: {
+            address: null,
+            zipCode: null,
+            rent: null,
+            bedrooms: null,
+            bathrooms: null,
+            parkingSpots: null
+        },
+        url: Urls.registerHouse
     })
 };

@@ -3,7 +3,7 @@ import tpl from '../templates/registerHouse.tpl';
 
 export default Marionette.View.extend({
     template: tpl,
-    className: "create-house-view",
+    className: 'create-house-view',
 
     events: {
         'click .js-parking-input-checkbox': 'onChangeParkingCheckbox',
@@ -25,11 +25,15 @@ export default Marionette.View.extend({
 
     onSubmitRegister: function() {
         var inputs = this._validateAndCollectInput();
-        console.log(inputs);
         if (inputs) {
-            console.log("submitting request");
+            var registerHouse = App.request('house:register', inputs);
+            registerHouse.done(function(response) {
+                App.trigger('toast:show', "Successfully registered house");
+            }).fail(function(response) {
+                App.trigger('error:toast:show', response.responseText);
+            });
         } else {
-            console.log("not submitting");
+            App.trigger('error:toast:show', 'Must complete all required fields');
         }
     },
 
@@ -41,26 +45,36 @@ export default Marionette.View.extend({
             $(this).removeClass('select-input--error');
         });
         var requiredFieldsFilled = true;
-        var inputs = {};
-        if (this.$('.js-address-input-text').val().length === 0) {
+        var inputs = { // All set to null for clarity of what is being passed around
+            address: null,
+            zipCode: null,
+            rent: null,
+            bedrooms: null,
+            bathrooms: null,
+            parkingSpots: null
+        };
+
+        var addressInput = this.$('.js-address-input-text').val();
+        if (addressInput.length === 0) {
             this.$('.js-address-input-text').addClass('text-input--error');
             requiredFieldsFilled = false;
         } else {
-            inputs.address = this.$('.js-address-input-text').val();
+            inputs.address = addressInput;
         }
-
-        if (this.$('.js-zipcode-input-text').val().length !== 5 || this._isNotInteger(this.$('.js-zipcode-input-text').val())) {
+        var zipcodeInput = this.$('.js-zipcode-input-text').val();
+        if (zipcodeInput.length !== 5 || parseInt(zipcodeInput) === NaN) {
             this.$('.js-zipcode-input-text').addClass('text-input--error');
             requiredFieldsFilled = false;
         } else {
-            inputs.zipcode = parseInt(this.$('.js-zipcode-input-text').val());
+            inputs.zipCode = parseInt(zipcodeInput);
         }
 
-        if (this.$('.js-rent-input-text').val().length === 0 || this._isNotInteger(this.$('.js-rent-input-text').val())) {
+        var rentInput = this.$('.js-rent-input-text').val().replace('$', '').replace(',', '');
+        if (rentInput.length === 0 || parseInt(rentInput) === NaN) {
             this.$('.js-rent-input-text').addClass('text-input--error');
             requiredFieldsFilled = false;
         } else {
-            inputs.rent = parseInt(this.$('.js-rent-input-text').val());
+            inputs.rent = parseInt(rentInput);
         }
         inputs.freeWashing = this.$('.js-free-washing-input-checkbox').is(':checked');
         inputs.useableBasement = this.$('.js-useable-basement-input-checkbox').is(':checked');
@@ -87,9 +101,5 @@ export default Marionette.View.extend({
         }
 
         return requiredFieldsFilled ? inputs : null;
-    },
-
-    _isNotInteger: function(potentialInt) {
-        return !(Math.floor(potentialInt) === potentialInt && $.isNumeric(potentialInt));
     }
 });

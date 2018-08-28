@@ -15,7 +15,9 @@ export default Marionette.View.extend({
     },
 
     onRender: function() {
-        this.showChildView("ribbonRegion", new RibbonView({model: new Entities.User()}));
+        var cookieMap = App.request('cookie:map', document.cookie);
+        var user = new Entities.User({loggedIn: cookieMap.loggedIn});
+        this.showChildView("ribbonRegion", new RibbonView({model: user}));
     },
 
     initialize: function() {

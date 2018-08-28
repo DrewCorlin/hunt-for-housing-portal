@@ -6,7 +6,7 @@ export default Marionette.Application.extend({
     region: '#app',
 
     onStart() {
-        window.serverSession = {'authToken': null};
+        window.serverSession = {authToken: null};
         _.each(GlobalEvents.requests, function(action, event) {
             App.reply(event, action);
         });
